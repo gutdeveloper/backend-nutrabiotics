@@ -10,6 +10,7 @@ Una API REST segura construida con Express.js y TypeScript, siguiendo los princi
 - Características de seguridad (CORS, Helmet, Rate Limiting)
 - Middleware de manejo de errores
 - Validación de datos con Zod
+- Sistema de logging diario con Winston
 
 ## Estructura del Proyecto
 
@@ -28,7 +29,8 @@ src/
 │   ├── repositories/  # Implementaciones de repositorios
 │   ├── routes/        # Definición de rutas
 │   ├── services/      # Servicios de infraestructura
-│   └── validators/    # Esquemas de validación
+│   ├── validators/    # Esquemas de validación
+│   └── logger/        # Sistema de logging
 └── config/         # Archivos de configuración
 ```
 
@@ -83,3 +85,31 @@ La aplicación utiliza Prisma con SQLite y define los siguientes modelos:
 - Contraseñas hasheadas con bcrypt
 - Autenticación basada en JWT
 - Middleware de roles
+
+## Sistema de Logging
+
+La aplicación implementa un sistema de logging basado en Winston que:
+
+- Guarda logs en archivos diarios con el formato `YYYY-MM-DD.log` en la carpeta `/logs`
+- Cambia automáticamente al archivo del siguiente día a medianoche
+- Muestra logs coloreados en consola durante el desarrollo
+- Captura información de errores y solicitudes HTTP
+- Registra la duración de las peticiones HTTP
+
+### Niveles de Log
+
+- **error**: Errores críticos que afectan el funcionamiento
+- **warn**: Advertencias importantes
+- **info**: Información general (nivel predeterminado en producción)
+- **debug**: Información detallada (solo en desarrollo)
+
+### Uso en el Código
+
+```typescript
+import logger from '../infrastructure/logger/logger';
+
+// Ejemplos de uso
+logger.info('Mensaje informativo');
+logger.warn('Advertencia');
+logger.error('Error crítico', error);
+```

@@ -2,11 +2,10 @@ import { config } from "./config/env.config";
 import express from "express";
 import cors, { CorsOptions } from "cors";
 import helmet, { HelmetOptions } from "helmet";
-import morgan from "morgan";
 import rateLimit from "express-rate-limit";
-import swaggerUi from "swagger-ui-express";
 import authRoutes from "./infrastructure/routes/auth.routes";
 import { errorHandler } from "./infrastructure/middlewares/errors.middleware";
+import { requestLogger } from "./infrastructure/middlewares/request-logger.middleware";
 
 const app = express();
 
@@ -42,7 +41,7 @@ const limiter = rateLimit({
 app.use(helmet(helmetOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(morgan("dev"));
+app.use(requestLogger); // Usar el middleware importado
 app.use(limiter);
 app.use(`/api/v1/auth`, authRoutes);
 app.use(errorHandler);
