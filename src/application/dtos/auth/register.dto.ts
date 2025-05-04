@@ -1,6 +1,6 @@
 import { UserRole } from '../../../domain/entities/user.entity';
 
-export interface IRegisterDTO {
+export interface RegisterDTO {
     firstName: string;
     lastName: string;
     email: string;

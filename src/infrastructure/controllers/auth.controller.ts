@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { AuthUseCase } from "../../application/use-cases/auth.use-case";
-import { IRegisterDTO } from "../../application/dtos/auth/register.dto";
-import { ILoginDTO } from "../../application/dtos/auth/login.dto";
+import { RegisterDTO } from "../../application/dtos/auth/register.dto";
+import { LoginDTO } from "../../application/dtos/auth/login.dto";
 
 export class AuthController {
   constructor(private readonly authUseCase: AuthUseCase) {}
@@ -9,7 +9,7 @@ export class AuthController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { firstName, lastName, email, password } = req.body;
-      const registerDTO: IRegisterDTO = {
+      const registerDTO: RegisterDTO = {
         firstName,
         lastName,
         email,
@@ -27,7 +27,7 @@ export class AuthController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
-      const loginDTO: ILoginDTO = { email, password };
+      const loginDTO: LoginDTO = { email, password };
 
       const result = await this.authUseCase.login(loginDTO);
 
