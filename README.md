@@ -1,68 +1,101 @@
-# Nutrabionics API
+# API de Nutrabionics
 
-A secure REST API built with Express.js and TypeScript, following clean architecture principles.
+Una API REST segura construida con Express.js y TypeScript, siguiendo los principios de arquitectura limpia.
 
-## Features
+## Características
 
-- TypeScript support
-- Clean Architecture
-- Security features (CORS, Helmet, Rate Limiting)
-- API documentation with Swagger
-- Error handling middleware
-- Environment configuration
-- Development tools (ts-node-dev, ESLint)
+- Soporte completo para TypeScript
+- Arquitectura Limpia (Clean Architecture)
+- Base de datos SQLite con Prisma ORM
+- Autenticación con JWT
+- Características de seguridad (CORS, Helmet, Rate Limiting)
+- Documentación de la API con Swagger
+- Middleware de manejo de errores
+- Validación de datos con class-validator y Zod
+- Configuración de entorno con dotenv
+- Herramientas de desarrollo (ts-node-dev, ESLint)
 
-## Project Structure
+## Estructura del Proyecto
 
 ```
 src/
 ├── domain/         # Reglas de negocio empresariales
+│   ├── entities/   # Entidades del dominio
+│   ├── interfaces/ # Interfaces y contratos
+│   └── errors/     # Definiciones de errores
 ├── application/    # Reglas de negocio de la aplicación
+│   ├── dtos/       # Objetos de transferencia de datos
+│   └── use-cases/  # Casos de uso de la aplicación
 ├── infrastructure/ # Frameworks, drivers y herramientas
-│   └── http/      # Implementación específica de Express.js
-│       ├── controllers/  # Controladores HTTP
-│       ├── middlewares/  # Middlewares HTTP
-│       └── routes/       # Rutas HTTP
+│   ├── controllers/   # Controladores HTTP
+│   ├── middlewares/   # Middlewares HTTP
+│   ├── repositories/  # Implementaciones de repositorios
+│   ├── routes/        # Definición de rutas
+│   ├── services/      # Servicios de infraestructura
+│   └── validators/    # Esquemas de validación
 └── config/         # Archivos de configuración
 ```
 
-## Getting Started
+## Modelo de Datos
 
-1. Clone the repository
-2. Install dependencies:
+La aplicación utiliza Prisma con SQLite y define los siguientes modelos:
+
+- **User**: Gestión de usuarios con autenticación
+
+## Primeros Pasos
+
+1. Clona el repositorio
+2. Instala las dependencias:
    ```bash
    npm install
    ```
-3. Copy `.env.example` to `.env` and configure your environment variables
-4. Run the development server:
+3. Configura las variables de entorno en un archivo `.env` con el siguiente formato:
+   ```
+   DATABASE_URL="file:./dev.db"
+   PORT=3000
+   NODE_ENV=development
+   JWT_SECRET=tu_secreto_seguro
+   ```
+4. Ejecuta las migraciones de Prisma:
+   ```bash
+   npx prisma migrate dev
+   ```
+5. Inicia el servidor de desarrollo:
    ```bash
    npm run dev
    ```
 
-## Available Scripts
+## Scripts Disponibles
 
-- `npm run dev`: Start development server with hot-reload
-- `npm run build`: Build the project
-- `npm start`: Start production server
-- `npm run lint`: Run ESLint
-- `npm test`: Run tests
+- `npm run dev`: Inicia el servidor de desarrollo con recarga automática
+- `npm run build`: Compila el proyecto
+- `npm start`: Inicia el servidor en modo producción
+- `npm run lint`: Ejecuta ESLint
+- `npm test`: Ejecuta las pruebas
 
-## API Documentation
+## Documentación de la API
 
-Once the server is running, you can access the Swagger documentation at:
+Una vez que el servidor esté en funcionamiento, puedes acceder a la documentación de Swagger en:
 
 ```
 http://localhost:3000/api-docs
 ```
 
-## Security Features
+## Endpoints Principales
 
-- CORS protection
-- Helmet security headers
-- Rate limiting
-- JSON payload protection
-- Security best practices
+- **POST /api/v1/auth/register**: Registro de nuevos usuarios
+- **POST /api/v1/auth/login**: Inicio de sesión de usuarios
 
-## License
+## Características de Seguridad
+
+- Protección CORS
+- Cabeceras de seguridad con Helmet
+- Limitación de tasa de peticiones
+- Protección contra payloads JSON maliciosos
+- Contraseñas hasheadas con bcrypt
+- Autenticación basada en JWT
+- Middleware de roles y permisos
+
+## Licencia
 
 ISC

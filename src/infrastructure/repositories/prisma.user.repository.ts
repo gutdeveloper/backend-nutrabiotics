@@ -16,7 +16,7 @@ export class PrismaUserRepository implements IUserRepository {
 
     if (!user) return null;
 
-    return new User({ ...user });
+    return new User({ ...user, role: user.role as UserRole });
   }
 
   async findById(id: string): Promise<User | null> {
@@ -26,7 +26,7 @@ export class PrismaUserRepository implements IUserRepository {
 
     if (!user) return null;
 
-    return new User({ ...user });
+    return new User({ ...user, role: user.role as UserRole });
   }
 
   async create(user: User): Promise<User> {
@@ -40,6 +40,6 @@ export class PrismaUserRepository implements IUserRepository {
       },
     });
 
-    return new User({ ...createdUser });
+    return new User({ ...createdUser, role: createdUser.role as UserRole });
   }
 }

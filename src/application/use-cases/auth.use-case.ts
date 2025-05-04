@@ -19,9 +19,11 @@ export class AuthUseCase {
   /**
    * Registra un nuevo usuario
    * @param dto - Datos del usuario a registrar
-   * @returns {Promise<{ user: User; token: string }>} - Usuario registrado y token de autenticación
+   * @returns {Promise<{ user: ReturnType<User['toJSON']>; token: string }>} - Usuario registrado y token de autenticación
    */
-  async register(dto: IRegisterDTO): Promise<{ user: User; token: string }> {
+  async register(
+    dto: IRegisterDTO
+  ): Promise<{ user: ReturnType<User["toJSON"]>; token: string }> {
     const { firstName, lastName, email, password } = dto;
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) throw new ConflictError("Email already in use");
@@ -38,15 +40,17 @@ export class AuthUseCase {
       email,
       role: UserRole.USER,
     });
-    return { user: savedUser, token };
+    return { user: savedUser.toJSON(), token };
   }
 
   /**
    * Inicia sesión de un usuario
    * @param dto - Datos del usuario a iniciar sesión
-   * @returns {Promise<{ user: User; token: string }>} - Usuario autenticado y token de autenticación
+   * @returns {Promise<{ user: ReturnType<User['toJSON']>; token: string }>} - Usuario autenticado y token de autenticación
    */
-  async login(dto: ILoginDTO): Promise<{ user: User; token: string }> {
+  async login(
+    dto: ILoginDTO
+  ): Promise<{ user: ReturnType<User["toJSON"]>; token: string }> {
     const { email, password } = dto;
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new UnauthorizedError("Invalid credentials");
@@ -60,6 +64,6 @@ export class AuthUseCase {
       email,
       role: user.getRole(),
     });
-    return { user, token };
+    return { user: user.toJSON(), token };
   }
 }

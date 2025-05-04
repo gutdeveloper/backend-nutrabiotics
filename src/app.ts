@@ -47,7 +47,4 @@ app.use(limiter);
 app.use(`/api/v1/auth`, authRoutes);
 app.use(errorHandler);
 
-// const swaggerDocument = require("../swagger.json");
-// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
 export default app;

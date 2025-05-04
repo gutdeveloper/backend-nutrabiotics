@@ -13,18 +13,22 @@ const router = express.Router();
 router.post(
   "/register",
   validateData({ body: registerSchema }),
-  (req, res, next) => authController.register(req, res, next)
-);
-
-router.post("/login", validateData({ body: loginSchema }), (req, res, next) =>
-  authController.login(req, res, next)
-);
-
-router.get(
-  "/profile",
-  [authMiddleware],
   (req: Request, res: Response, next: NextFunction) =>
-    authController.profile(req, res, next)
+    authController.register(req, res, next)
 );
+
+router.post(
+  "/login",
+  validateData({ body: loginSchema }),
+  (req: Request, res: Response, next: NextFunction) =>
+    authController.login(req, res, next)
+);
+
+// router.get(
+//   "/profile",
+//   [authMiddleware],
+//   (req: Request, res: Response, next: NextFunction) =>
+//     authController.profile(req, res, next)
+// );
 
 export default router;

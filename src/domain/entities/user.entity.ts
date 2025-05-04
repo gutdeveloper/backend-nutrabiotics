@@ -65,4 +65,14 @@ export class User {
   getRole(): UserRole {
     return this.role;
   }
+
+  toJSON() {
+    return {
+      id: this.id,
+      firstName: this.firstName,
+      lastName: this.lastName,
+      email: this.email,
+      role: this.role
+    };
+  }
 }

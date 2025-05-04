@@ -1,44 +1,33 @@
 {
-  "openapi": "3.0.0",
+  "swagger": "2.0",
   "info": {
-    "title": "Nutrabionics API",
-    "version": "1.0.0",
-    "description": "REST API for Nutrabionics"
+    "title": "API de Nutrabionics",
+    "description": "API REST para Nutrabionics",
+    "version": "1.0.0"
   },
-  "servers": [
-    {
-      "url": "http://localhost:3000/api/v1",
-      "description": "Development server"
-    }
+  "host": "localhost:3000",
+  "basePath": "/api/v1",
+  "schemes": [
+    "http"
   ],
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "Authorization",
+      "description": "Token JWT con formato Bearer"
+    }
+  },
   "paths": {
-    "/health": {
+    "/api/v1/health": {
       "get": {
-        "summary": "Health check endpoint",
-        "description": "Returns the API's health status",
+        "description": "",
         "responses": {
           "200": {
-            "description": "API is healthy",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "string",
-                      "example": "OK"
-                    },
-                    "timestamp": {
-                      "type": "string",
-                      "format": "date-time"
-                    }
-                  }
-                }
-              }
-            }
+            "description": "OK"
           }
         }
       }
     }
   }
-} 
+}
