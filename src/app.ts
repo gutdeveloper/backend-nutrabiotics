@@ -1,15 +1,14 @@
-import "dotenv/config";
+import { config } from "./config/env.config";
 import express from "express";
 import cors, { CorsOptions } from "cors";
 import helmet, { HelmetOptions } from "helmet";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 import swaggerUi from "swagger-ui-express";
-import { router } from "./infrastructure/http/routes";
-import { errorHandler } from "./infrastructure/http/middlewares/errorHandler";
+import authRoutes from "./infrastructure/routes/auth.routes";
+import { errorHandler } from "./infrastructure/middlewares/errors.middleware";
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 const helmetOptions: HelmetOptions = {
   contentSecurityPolicy: {
@@ -33,30 +32,22 @@ const corsOptions: CorsOptions = {
   credentials: true,
 };
 
-// Security Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: "draft-8",
+  legacyHeaders: false,
+});
+
 app.use(helmet(helmetOptions));
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan("dev"));
-
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: Number(process.env.RATE_LIMIT_WINDOW) * 60 * 1000 || 15 * 60 * 1000, // 15 minutes
-  max: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
-});
 app.use(limiter);
-
-// API Routes
-const apiPrefix = process.env.API_PREFIX || "/api/v1";
-app.use(apiPrefix, router);
-
-// Swagger Documentation
-const swaggerDocument = require("../swagger.json");
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-// Error Handler
+app.use(`/api/v1/auth`, authRoutes);
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+// const swaggerDocument = require("../swagger.json");
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+export default app;

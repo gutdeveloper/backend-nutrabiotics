@@ -1,0 +1,45 @@
+import { PrismaClient } from "@prisma/client";
+import { User, UserRole } from "../../domain/entities/user.entity";
+import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
+
+export class PrismaUserRepository implements IUserRepository {
+  private prisma: PrismaClient;
+
+  constructor() {
+    this.prisma = new PrismaClient();
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (!user) return null;
+
+    return new User({ ...user });
+  }
+
+  async findById(id: string): Promise<User | null> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) return null;
+
+    return new User({ ...user });
+  }
+
+  async create(user: User): Promise<User> {
+    const createdUser = await this.prisma.user.create({
+      data: {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        password: user.getPassword(),
+        role: user.getRole(),
+      },
+    });
+
+    return new User({ ...createdUser });
+  }
+}
