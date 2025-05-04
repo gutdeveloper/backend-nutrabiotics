@@ -4,22 +4,18 @@ Una API REST segura construida con Express.js y TypeScript, siguiendo los princi
 
 ## Características
 
-- Soporte completo para TypeScript
 - Arquitectura Limpia (Clean Architecture)
 - Base de datos SQLite con Prisma ORM
 - Autenticación con JWT
 - Características de seguridad (CORS, Helmet, Rate Limiting)
-- Documentación de la API con Swagger
 - Middleware de manejo de errores
-- Validación de datos con class-validator y Zod
-- Configuración de entorno con dotenv
-- Herramientas de desarrollo (ts-node-dev, ESLint)
+- Validación de datos con Zod
 
 ## Estructura del Proyecto
 
 ```
 src/
-├── domain/         # Reglas de negocio empresariales
+├── domain/         # Reglas de negocio
 │   ├── entities/   # Entidades del dominio
 │   ├── interfaces/ # Interfaces y contratos
 │   └── errors/     # Definiciones de errores
@@ -73,15 +69,7 @@ La aplicación utiliza Prisma con SQLite y define los siguientes modelos:
 - `npm run lint`: Ejecuta ESLint
 - `npm test`: Ejecuta las pruebas
 
-## Documentación de la API
-
-Una vez que el servidor esté en funcionamiento, puedes acceder a la documentación de Swagger en:
-
-```
-http://localhost:3000/api-docs
-```
-
-## Endpoints Principales
+## Endpoints
 
 - **POST /api/v1/auth/register**: Registro de nuevos usuarios
 - **POST /api/v1/auth/login**: Inicio de sesión de usuarios
@@ -94,8 +82,4 @@ http://localhost:3000/api-docs
 - Protección contra payloads JSON maliciosos
 - Contraseñas hasheadas con bcrypt
 - Autenticación basada en JWT
-- Middleware de roles y permisos
-
-## Licencia
-
-ISC
+- Middleware de roles
