@@ -71,10 +71,6 @@ export class ProductController {
       const product = await this.productUseCase.update(id, productData);
       res.status(200).json(product);
     } catch (error: any) {
-      if (error.message === 'Product not found') {
-        res.status(404).json({ error: 'Product not found' });
-        return;
-      }
       next(error);
     }
   }
@@ -85,10 +81,6 @@ export class ProductController {
       await this.productUseCase.delete(id);
       res.status(200).send({ message: 'Product deleted successfully' });
     } catch (error: any) {
-      if (error.message === 'Product not found') {
-        res.status(404).json({ error: 'Product not found' });
-        return;
-      }
       next(error);
     }
   }

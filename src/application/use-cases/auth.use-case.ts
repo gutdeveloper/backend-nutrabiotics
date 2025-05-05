@@ -1,5 +1,5 @@
 import { User, UserRole } from "../../domain/entities/user.entity";
-import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
+import { UserRepository } from "../../domain/interfaces/user-repository.interface";
 import { IHash } from "../../domain/interfaces/hash.interface";
 import { IToken } from "../../domain/interfaces/token.interface";
 import { UnauthorizedError } from "../../domain/errors/unauthorized.error";
@@ -12,7 +12,7 @@ import { AuthResponseDTO } from "../dtos/auth/auth.response.dto";
  */
 export class AuthUseCase {
   constructor(
-    private readonly userRepository: IUserRepository,
+    private readonly userRepository: UserRepository,
     private readonly hashService: IHash,
     private readonly tokenService: IToken
   ) {}

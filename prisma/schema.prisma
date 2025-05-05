@@ -22,6 +22,7 @@ model User {
   role      String   @default("USER")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  orders    Order[]
   @@index([email])
   @@map("users")
 }
@@ -38,4 +39,31 @@ model Product {
   updatedAt   DateTime @updatedAt
   @@index([slug])
   @@map("products")
+}
+
+model Order {
+  id        String         @id @default(uuid())
+  userId    String
+  total     Float
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+  user      User           @relation(fields: [userId], references: [id])
+  products  OrderProduct[]
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderProduct {
+  id        String   @id @default(uuid())
+  orderId   String
+  productId String
+  name      String
+  price     Float
+  quantity  Int
+  subtotal  Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  @@index([orderId])
+  @@map("order_products")
 }
