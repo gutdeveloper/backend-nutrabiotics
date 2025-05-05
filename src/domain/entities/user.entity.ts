@@ -1,3 +1,5 @@
+import { isValidEmail } from '../utils/validators';
+
 export enum UserRole {
   USER = "USER",
   ADMIN = "ADMIN",
@@ -21,11 +23,11 @@ export class User {
   private readonly role: UserRole;
 
   constructor(props: UserProps) {
-    this.id = props.id || this.generateId();
+    this.id = props.id || '';
     this.firstName = props.firstName;
     this.lastName = props.lastName;
     
-    if (!this.isValidEmail(props.email)) {
+    if (!isValidEmail(props.email)) {
       throw new Error("Invalid email format");
     }
     this.email = props.email;
@@ -38,20 +40,8 @@ export class User {
     this.role = props.role || UserRole.USER;
   }
 
-  private isValidEmail(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
   private isValidPassword(password: string): boolean {
     return password.length >= 6;
-  }
-
-  private generateId(): string {
-    return (
-      Math.random().toString(36).substring(2, 15) +
-      Math.random().toString(36).substring(2, 15)
-    );
   }
 
   getId(): string {

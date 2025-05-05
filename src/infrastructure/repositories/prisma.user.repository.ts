@@ -1,13 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 import { User, UserRole } from "../../domain/entities/user.entity";
-import { IUserRepository } from "../../domain/interfaces/user-repository.interface";
+import { UserRepository } from "../../domain/interfaces/user-repository.interface";
 
-export class PrismaUserRepository implements IUserRepository {
-  private prisma: PrismaClient;
+export class PrismaUserRepository implements UserRepository {
 
-  constructor() {
-    this.prisma = new PrismaClient();
-  }
+  constructor(private readonly prisma: PrismaClient) {}
 
   async findByEmail(email: string): Promise<User | null> {
     const user = await this.prisma.user.findUnique({
