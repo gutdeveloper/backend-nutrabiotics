@@ -81,9 +81,11 @@ El proyecto incluye una configuración de Docker para PostgreSQL:
    ```bash
    npx prisma migrate dev
    ```
-5. Ejecuta el seeder para crear unos productos de ejemplo:
+5. Ejecuta el seeder para crear unos productos de ejemplo y un usuario admin:
    ```bash
    npm run seed
+
+   admin@nutrabiotics.com admin123
    ```
 5. Inicia el servidor de desarrollo:
    ```bash
