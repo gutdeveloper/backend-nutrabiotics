@@ -1,5 +1,3 @@
-import { generateId } from "../utils/id-generator";
-
 interface OrderProductProps {
   id?: string;
   orderId: string;
@@ -24,7 +22,7 @@ export class OrderProduct {
   public readonly updatedAt: Date;
 
   constructor(props: OrderProductProps) {
-    this.id = props.id || generateId();
+    this.id = props.id || '';
     this.orderId = props.orderId;
     this.productId = props.productId;
     this.name = props.name;

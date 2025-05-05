@@ -14,15 +14,14 @@ export class PrismaOrderRepository implements OrderRepository {
 
   async create(order: Order): Promise<Order> {
     const { userId, total, quantity_products } = order;
+    
+    const createdOrder = await this.prisma.order.create({ data: {
+      userId,
+      total,
+      quantity_products,
+    } as any });
 
-    const createdOrder = await this.prisma.order.create({
-      data: {
-        id: order.id,
-        userId,
-        total,
-        quantity_products,
-      },
-    });
+    console.log('createdOrder', createdOrder);
 
     return new Order({
       ...createdOrder,
@@ -68,7 +67,7 @@ export class PrismaOrderRepository implements OrderRepository {
           firstName: data.user.firstName,
           lastName: data.user.lastName,
           email: data.user.email,
-          password: '', // No exponemos la contraseña
+          password: data.user.password, // No exponemos la contraseña
           role: data.user.role as UserRole,
         }) : null;
 

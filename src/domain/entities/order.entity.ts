@@ -1,4 +1,3 @@
-import { generateId } from "../utils/id-generator";
 import { OrderProduct } from "./order-product.entity";
 import { User } from "./user.entity";
 
@@ -24,7 +23,8 @@ export class Order {
   public readonly updatedAt: Date;
 
   constructor(props: OrderProps) {
-    this.id = props.id || generateId();
+    // Si no se proporciona un ID, se establece como vacío y se espera que se asigne después
+    this.id = props.id || '';
     this.userId = props.userId;
     this.products = props.products || [];
     this.total = props.total || this.calculateTotal();
@@ -60,5 +60,18 @@ export class Order {
       createdAt: this.createdAt,
       updatedAt: new Date()
     });
+  }
+
+  public toJSON() {
+    const userToJSON = {
+      id: this.id,      
+      products: this.products,
+      total: this.total,
+      quantity_products: this.quantity_products,      
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+      ...(this.user && { user: this.user }),
+    };    
+    return userToJSON;
   }
 } 

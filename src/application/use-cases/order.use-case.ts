@@ -12,6 +12,8 @@ import {
 } from "../dtos/common/pagination.interface";
 import { ForbiddenError } from "../../domain/errors/forbidden.error";
 import { UserRole } from "../../domain/entities/user.entity";
+import { ProductRepository } from "../../domain/interfaces/product-repository.interface";
+import { OrderProductRepository } from "../../domain/interfaces/order-product-repository.interface";
 
 export class OrderUseCase {
   constructor(
@@ -29,18 +31,16 @@ export class OrderUseCase {
     // Ejecutar toda la operación dentro de una transacción
     return this.transaction.run(async (tx) => {
       // Obtener los repositorios para la transacción actual
-      const orderRepo = tx.getOrderRepository();
-      const productRepo = tx.getProductRepository();
-      const orderProductRepo = tx.getOrderProductRepository();
+      const orderRepo: OrderRepository = tx.getOrderRepository();
+      const productRepo: ProductRepository = tx.getProductRepository();
+      const orderProductRepo: OrderProductRepository = tx.getOrderProductRepository();
 
-      // Crear la orden inicialmente sin productos
-      const order = new Order({
-        userId: orderData.userId,
-      });
+      // Recopilar información de los productos
+      const orderItems = [];
+      let totalQuantityProducts = 0;
+      let totalAmount = 0;
 
-      let orderWithProducts = order;
-
-      // Buscar cada producto y añadirlo a la orden
+      // Buscar cada producto y calcular totales
       for (const item of orderData.products) {
         const product = await productRepo.findById(item.productId);
         if (!product) {
@@ -52,38 +52,54 @@ export class OrderUseCase {
           throw new BadRequestError(`Not enough stock for product ${product.name}`);
         }
 
-        // Crear el OrderProduct con los datos del producto en el momento de la compra
-        const orderProduct = new OrderProduct({
-          orderId: order.id,
-          productId: product.id,
-          name: product.name,
-          price: product.price,
+        // Guardar los datos del producto para utilizarlos después
+        orderItems.push({
+          product,
           quantity: item.quantity,
+          subtotal: product.price * item.quantity
         });
 
-        // Añadir el producto a la orden (esto crea una nueva instancia de Order)
-        orderWithProducts = orderWithProducts.addProduct(orderProduct);
+        totalQuantityProducts += item.quantity;
+        totalAmount += product.price * item.quantity;
       }
 
-      // Guardar la orden
-      const createdOrder = await orderRepo.create(orderWithProducts);
+      // Crear la orden con los totales calculados
+      const order = new Order({
+        userId: orderData.userId,
+        total: totalAmount,
+        quantity_products: totalQuantityProducts
+      });
 
-      // Guardar los productos de la orden
-      for (const product of orderWithProducts.products) {
-        await orderProductRepo.create(product);
+      // Guardar la orden en la base de datos (esto asignará un ID)
+      const createdOrder = await orderRepo.create(order);
+
+      // Ahora que tenemos el ID de la orden, crear los productos asociados
+      for (const item of orderItems) {
+        const orderProduct = new OrderProduct({
+          orderId: createdOrder.id, // Usar el ID generado por Prisma
+          productId: item.product.id,
+          name: item.product.name,
+          price: item.product.price,
+          quantity: item.quantity,
+          subtotal: item.subtotal
+        });
+
+        // Guardar el producto de la orden
+        await orderProductRepo.create(orderProduct);
 
         // Actualizar el stock del producto
-        const originalProduct = await productRepo.findById(product.productId);
-        if (originalProduct) {
-          await productRepo.update(product.productId, {
-            quantity: originalProduct.quantity - product.quantity,
-          });
-        }
+        await productRepo.update(item.product.id, {
+          quantity: item.product.quantity - item.quantity,
+        });
       }
 
       // Obtener la orden completa con sus productos
       const orderWithDetails = await orderRepo.findById(createdOrder.id);
-      return orderWithDetails || createdOrder;
+      if (!orderWithDetails) {
+        throw new NotFoundError("Order not found");
+      }
+
+      return orderWithDetails;
     });
   }
 
