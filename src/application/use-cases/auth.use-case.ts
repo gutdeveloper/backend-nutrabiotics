@@ -19,9 +19,9 @@ export class AuthUseCase {
   /**
    * Registra un nuevo usuario
    * @param dto - Datos del usuario a registrar
-   * @returns {Promise<AuthResponseDTO>} - Usuario registrado y token de autenticación
+   * @returns {Promise<{ user: User, token: string }>} - Usuario registrado y token de autenticación
    */
-  async register(dto: RegisterDTO): Promise<AuthResponseDTO> {
+  async register(dto: RegisterDTO): Promise<{ user: User; token: string }> {
     const { firstName, lastName, email, password } = dto;
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) throw new ConflictError("Email already in use");
@@ -38,15 +38,15 @@ export class AuthUseCase {
       email,
       role: UserRole.USER,
     });
-    return { user: savedUser.toJSON(), token };
+    return { user: savedUser, token };
   }
 
   /**
    * Inicia sesión de un usuario
    * @param dto - Datos del usuario a iniciar sesión
-   * @returns {Promise<AuthResponseDTO>} - Usuario autenticado y token de autenticación
+   * @returns {Promise<{ user: User, token: string }>} - Usuario autenticado y token de autenticación
    */
-  async login(dto: LoginDTO): Promise<AuthResponseDTO> {
+  async login(dto: LoginDTO): Promise<{ user: User; token: string }> {
     const { email, password } = dto;
     const user = await this.userRepository.findByEmail(email);
     if (!user) throw new UnauthorizedError("Invalid credentials");
@@ -60,6 +60,6 @@ export class AuthUseCase {
       email,
       role: user.getRole(),
     });
-    return { user: user.toJSON(), token };
+    return { user, token };
   }
 }

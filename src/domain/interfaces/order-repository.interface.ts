@@ -9,6 +9,4 @@ export interface OrderRepository {
   findAll(pagination: PaginationParamsDto): Promise<PaginatedResponseDto<Order>>;
   findAllByUserId(userId: string, pagination: PaginationParamsDto): Promise<PaginatedResponseDto<Order>>;
   findById(id: string): Promise<Order | null>;
-  update(id: string, order: Partial<Order>): Promise<Order>;
-  delete(id: string): Promise<void>;
-} 
+}
