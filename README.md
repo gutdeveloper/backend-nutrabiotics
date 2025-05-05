@@ -36,20 +36,43 @@ src/
 
 ## Modelo de Datos
 
-La aplicación utiliza Prisma con SQLite y define los siguientes modelos:
+La aplicación utiliza Prisma con PostgreSQL y define los siguientes modelos:
 
 - **User**: Gestión de usuarios con autenticación
+- **Product**: Gestión de productos
+- **Order**: Gestión de órdenes
+- **OrderItem**: Items dentro de las órdenes
+
+## Configuración con Docker
+
+El proyecto incluye una configuración de Docker para PostgreSQL:
+
+1. Asegúrate de tener Docker instalado en tu sistema
+2. Inicia los contenedores:
+   ```bash
+   docker-compose up -d
+   ```
+3. El servidor PostgreSQL estará disponible en:
+   - Host: localhost
+   - Puerto: 5432
+   - Usuario: admin
+   - Contraseña: admin
+   - Base de datos: nutrabiotics
 
 ## Primeros Pasos
 
 1. Clona el repositorio
+   ```bash
+   git clone https://github.com/gutdeveloper/backend-nutrabiotics.git
+   cd backend-nutrabiotics
+   ```
 2. Instala las dependencias:
    ```bash
    npm install
    ```
 3. Configura las variables de entorno en un archivo `.env` con el siguiente formato:
    ```
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL="postgresql://admin:admin@localhost:5432/nutrabiotics"
    PORT=3000
    NODE_ENV=development
    JWT_SECRET=tu_secreto_seguro
@@ -57,6 +80,10 @@ La aplicación utiliza Prisma con SQLite y define los siguientes modelos:
 4. Ejecuta las migraciones de Prisma:
    ```bash
    npx prisma migrate dev
+   ```
+5. Ejecuta el seeder para crear unos productos de ejemplo:
+   ```bash
+   npm run seed
    ```
 5. Inicia el servidor de desarrollo:
    ```bash

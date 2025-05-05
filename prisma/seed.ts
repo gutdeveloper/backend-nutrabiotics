@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { BcryptService } from '../src/infrastructure/services/bcrypt.service'; // Asegúrate de instalar bcryptjs si no lo tienes ya
 
 const prisma = new PrismaClient();
 
@@ -84,14 +85,16 @@ const productData = [
 // Función principal para realizar el seed
 async function main() {
   console.log(`Start seeding...`);
-  
+  const bcryptService = new BcryptService(10); // Instancia del servicio de Bcrypt
+  const hashedPassword = await bcryptService.hash('admin123'); // Cambia la contraseña por defecto si es necesario  
+
   // Eliminar registros existentes para evitar duplicados
   await prisma.product.deleteMany({});
-  
+
   // Crear nuevos productos
   for (const product of productData) {
     const { name, description, price, quantity, reference } = product;
-    
+
     const createdProduct = await prisma.product.create({
       data: {
         name,
@@ -102,10 +105,27 @@ async function main() {
         slug: createSlug(name, reference)
       }
     });
-    
+
     console.log(`Created product with ID: ${createdProduct.id}`);
   }
-  
+
+  const findAdmin = await prisma.user.findUnique({
+    where: {
+      email: 'admin@nutrabiotics.com',
+    },
+  });
+  if (!findAdmin) {
+    await prisma.user.create({
+      data: {
+        firstName: 'Admin',
+        lastName: 'User',
+        email: 'admin@nutrabiotics.com',
+        password: hashedPassword, // Asegúrate de encriptar la contraseña en producción
+        role: 'ADMIN',
+      },
+    });
+  }  
+
   console.log(`Seeding finished.`);
 }
 

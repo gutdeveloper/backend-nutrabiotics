@@ -1,6 +1,13 @@
 import { z } from "zod";
 
 export const paginationSchema = z.object({
-  page: z.number().int().min(1).default(1),
-  limit: z.number().int().min(1).default(10),
-}); 
+  page: z
+    .string()
+    .regex(/^\d+$/, { message: "Page must be a number string" })
+    .default("1"),
+
+  limit: z
+    .string()
+    .regex(/^\d+$/, { message: "Limit must be a number string" })
+    .default("10"),
+});

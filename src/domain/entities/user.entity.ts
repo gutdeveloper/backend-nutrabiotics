@@ -1,4 +1,3 @@
-import { generateId } from '../utils/id-generator';
 import { isValidEmail } from '../utils/validators';
 
 export enum UserRole {
@@ -24,7 +23,7 @@ export class User {
   private readonly role: UserRole;
 
   constructor(props: UserProps) {
-    this.id = props.id || generateId();
+    this.id = props.id || '';
     this.firstName = props.firstName;
     this.lastName = props.lastName;
     

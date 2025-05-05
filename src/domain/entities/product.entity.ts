@@ -27,7 +27,7 @@ export class Product {
   private static readonly MAX_DESCRIPTION_LENGTH = 600;
 
   constructor(props: ProductProps) {
-    this.id = props.id || generateId();
+    this.id = props.id || '';
     this.name = props.name;
 
     if (!this.isValidDescription(props.description)) {
