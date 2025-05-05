@@ -10,18 +10,18 @@ import {
 
 export class PrismaOrderRepository implements OrderRepository {
 
-  constructor(private readonly prisma: PrismaClient) {}
+  constructor(private readonly prisma: PrismaClient) { }
 
   async create(order: Order): Promise<Order> {
     const { userId, total, quantity_products } = order;
-    
-    const createdOrder = await this.prisma.order.create({ data: {
-      userId,
-      total,
-      quantity_products,
-    } as any });
 
-    console.log('createdOrder', createdOrder);
+    const createdOrder = await this.prisma.order.create({
+      data: {
+        userId,
+        total,
+        quantity_products,
+      }
+    });
 
     return new Order({
       ...createdOrder,
