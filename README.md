@@ -62,6 +62,10 @@ El proyecto incluye una configuración de Docker para PostgreSQL:
 ## Primeros Pasos
 
 1. Clona el repositorio
+   ```bash
+   git clone https://github.com/gutdeveloper/backend-nutrabiotics.git
+   cd backend-nutrabiotics
+   ```
 2. Instala las dependencias:
    ```bash
    npm install
