@@ -2,6 +2,7 @@ import { PrismaClient, Prisma } from "@prisma/client";
 import { Order } from "../../domain/entities/order.entity";
 import { OrderRepository } from "../../domain/interfaces/order-repository.interface";
 import { OrderProduct } from "../../domain/entities/order-product.entity";
+import { User, UserRole } from "../../domain/entities/user.entity";
 import {
   PaginationParamsDto,
   PaginatedResponseDto,
@@ -12,13 +13,14 @@ export class PrismaOrderRepository implements OrderRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async create(order: Order): Promise<Order> {
-    const { userId, total } = order;
+    const { userId, total, quantity_products } = order;
 
     const createdOrder = await this.prisma.order.create({
       data: {
         id: order.id,
         userId,
         total,
+        quantity_products,
       },
     });
 
@@ -43,6 +45,7 @@ export class PrismaOrderRepository implements OrderRepository {
         },
         include: {
           products: true,
+          user: true,
         },
       }),
       this.prisma.order.count(),
@@ -60,9 +63,19 @@ export class PrismaOrderRepository implements OrderRepository {
             })
         );
 
+        const user = data.user ? new User({
+          id: data.user.id,
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
+          email: data.user.email,
+          password: '', // No exponemos la contraseña
+          role: data.user.role as UserRole,
+        }) : null;
+
         return new Order({
           ...data,
           products,
+          user,
           createdAt: data.createdAt,
           updatedAt: data.updatedAt,
         });
@@ -164,38 +177,6 @@ export class PrismaOrderRepository implements OrderRepository {
       products,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-    });
-  }
-
-  async update(id: string, orderData: Partial<Order>): Promise<Order> {
-    const updatedOrder = await this.prisma.order.update({
-      where: { id },
-      data: orderData,
-      include: {
-        products: true,
-      },
-    });
-
-    const products = updatedOrder.products.map(
-      (product: any) =>
-        new OrderProduct({
-          ...product,
-          createdAt: product.createdAt,
-          updatedAt: product.updatedAt,
-        })
-    );
-
-    return new Order({
-      ...updatedOrder,
-      products,
-      createdAt: updatedOrder.createdAt,
-      updatedAt: updatedOrder.updatedAt,
-    });
-  }
-
-  async delete(id: string): Promise<void> {
-    await this.prisma.order.delete({
-      where: { id },
     });
   }
 } 
