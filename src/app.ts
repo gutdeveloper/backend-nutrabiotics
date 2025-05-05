@@ -4,6 +4,7 @@ import cors, { CorsOptions } from "cors";
 import helmet, { HelmetOptions } from "helmet";
 import rateLimit from "express-rate-limit";
 import authRoutes from "./infrastructure/routes/auth.routes";
+import productRoutes from "./infrastructure/routes/product.routes";
 import { errorHandler } from "./infrastructure/middlewares/errors.middleware";
 import { requestLogger } from "./infrastructure/middlewares/request-logger.middleware";
 
@@ -44,6 +45,7 @@ app.use(express.json());
 app.use(requestLogger); // Usar el middleware importado
 app.use(limiter);
 app.use(`/api/v1/auth`, authRoutes);
+app.use(`/api/v1/products`, productRoutes);
 app.use(errorHandler);
 
 export default app;
