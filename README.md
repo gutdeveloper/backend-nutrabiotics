@@ -68,7 +68,7 @@ El proyecto incluye una configuración de Docker para PostgreSQL:
    ```
 3. Configura las variables de entorno en un archivo `.env` con el siguiente formato:
    ```
-   DATABASE_URL="file:./dev.db"
+   DATABASE_URL="postgresql://admin:admin@localhost:5432/nutrabiotics"
    PORT=3000
    NODE_ENV=development
    JWT_SECRET=tu_secreto_seguro
